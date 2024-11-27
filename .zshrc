@@ -105,3 +105,5 @@ source $ZSH/oh-my-zsh.sh
 
 # Dotfiles repo setup
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+eval "$(/opt/homebrew/bin/brew shellenv)"

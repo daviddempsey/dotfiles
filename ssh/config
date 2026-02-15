@@ -29,3 +29,7 @@ Host personal-vps
     HostName 10.10.0.6
     User ubuntu
     ProxyJump vpn-bastion
+Host pc
+    HostName 10.10.0.7
+    User ddempsey
+    ProxyJump vpn-bastion

@@ -26,6 +26,8 @@ echo "==> zsh"
 link "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
 if [[ "$(uname)" == "Darwin" ]]; then
     link "$DOTFILES/zsh/.zshrc.local.mac" "$HOME/.zshrc.local"
+elif grep -qi microsoft /proc/version 2>/dev/null; then
+    link "$DOTFILES/zsh/.zshrc.local.wsl" "$HOME/.zshrc.local"
 fi
 
 # Git
@@ -55,4 +57,4 @@ echo "==> opencode"
 link "$DOTFILES/opencode/opencode.json" "$HOME/.config/opencode/opencode.json"
 
 echo
-echo "Done. Secrets go in ~/.zshrc.local (not tracked by git)."
+echo "Done. Secrets go in ~/.zshrc.secrets (not tracked by git)."

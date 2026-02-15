@@ -1,0 +1,6 @@
+# WSL-specific config (symlinked from dotfiles)
+
+# Auto-start tmux
+if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]]; then
+    exec tmux new-session -A -s default
+fi

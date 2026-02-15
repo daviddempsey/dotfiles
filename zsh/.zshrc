@@ -18,5 +18,8 @@ export NVM_DIR="$HOME/.nvm"
 export PAGER="cat"
 export PATH="$HOME/.local/bin:$PATH"
 
-# Machine-local secrets and platform-specific config — not tracked in git
+# Platform-specific config (symlinked from dotfiles)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+# Machine-local secrets — not tracked in git
+[[ -f ~/.zshrc.secrets ]] && source ~/.zshrc.secrets

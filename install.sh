@@ -24,6 +24,9 @@ echo
 # Shell
 echo "==> zsh"
 link "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
+if [[ "$(uname)" == "Darwin" ]]; then
+    link "$DOTFILES/zsh/.zshrc.local.mac" "$HOME/.zshrc.local"
+fi
 
 # Git
 echo "==> git"

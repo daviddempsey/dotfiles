@@ -1,0 +1,31 @@
+Host vpn-bastion
+    HostName 10.10.0.1
+    User root
+Host panel-prod
+    HostName 10.1.0.2
+    User ddempsey
+    ProxyJump vpn-bastion
+Host metrics-prod
+    HostName 10.1.0.3
+    User ddempsey
+    ProxyJump vpn-bastion
+Host panel-staging
+    HostName 10.0.0.2
+    User ddempsey
+    ProxyJump vpn-bastion
+Host wings-staging
+    HostName 10.0.0.3
+    User ddempsey
+    ProxyJump vpn-bastion
+Host metrics-staging
+    HostName 10.0.0.4
+    User ddempsey
+    ProxyJump vpn-bastion
+Host ny-1
+    HostName 10.10.0.4
+    User root
+    ProxyJump vpn-bastion
+Host personal-vps
+    HostName 10.10.0.6
+    User ubuntu
+    ProxyJump vpn-bastion

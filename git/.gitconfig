@@ -1,0 +1,8 @@
+[user]
+	name = daviddempsey
+	email = davidgdempsey@gmail.com
+	signingkey = 5FF3A69D47F55C9EE69C54F4017BED0670445552
+[commit]
+	gpgsign = true
+[init]
+	templateDir = /Users/ddempsey/.git-templates

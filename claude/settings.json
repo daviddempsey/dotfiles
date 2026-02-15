@@ -1,0 +1,24 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_SPAWN_BACKEND": "tmux"
+  },
+  "permissions": {
+    "allow": [
+      "Bash",
+      "Read(/*)",
+      "Update(*)"
+    ],
+    "deny": [],
+    "additionalDirectories": [
+      "/Volumes/git/compose-files",
+      "/Volumes/git/website",
+      "/Volumes/git/panel",
+      "/Volumes/git/wings",
+      "/Volumes/git/docs"
+    ]
+  },
+  "model": "opus",
+  "alwaysThinkingEnabled": true,
+  "skipDangerousModePermissionPrompt": true
+}

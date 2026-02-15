@@ -1,5 +1,9 @@
 # WSL-specific config (symlinked from dotfiles)
 
+# Auto-start WireGuard and sshd (idempotent, runs once per boot)
+sudo wg show wg0 &>/dev/null || sudo wg-quick up wg0 &>/dev/null
+sudo service ssh status &>/dev/null || sudo service ssh start &>/dev/null
+
 # Auto-start tmux
 if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]]; then
     exec tmux new-session -A -s default

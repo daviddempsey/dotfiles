@@ -7,36 +7,16 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
-# Dotfiles repo setup
+# Common aliases
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
-export GPG_TTY=$(tty)
-
-# Auto-start tmux
-if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]]; then
-    exec tmux new-session -A -s default
-fi
-
-# PHP Setup
-export PATH="/opt/homebrew/opt/php@8.2/bin:$PATH"
-export PATH="/opt/homebrew/opt/php@8.2/sbin:$PATH"
-
-# NVM Setup
+# NVM Setup (platform-specific paths loaded in .zshrc.local)
 export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-
-# Windsurf
-export PATH="/Users/ddempsey/.codeium/windsurf/bin:$PATH"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 export PAGER="cat"
+export PATH="$HOME/.local/bin:$PATH"
 
-# Claude
-export PATH="/Users/ddempsey/.local/bin:$PATH"
-
-# Antigravity
-export PATH="/Users/ddempsey/.antigravity/antigravity/bin:$PATH"
-
-# Machine-local secrets (API keys, etc.) — not tracked in git
+# Machine-local secrets and platform-specific config — not tracked in git
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

@@ -46,7 +46,7 @@ fi
 
 # 5. Commit
 COMMIT_MSG="auto-sync: $(hostname) $(date '+%Y-%m-%d %H:%M')"
-git commit -m "$COMMIT_MSG" --quiet
+git -c commit.gpgsign=false commit -m "$COMMIT_MSG" --quiet
 log "COMMIT $COMMIT_MSG"
 
 # 6. Push

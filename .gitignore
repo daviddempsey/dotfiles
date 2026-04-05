@@ -1,3 +1,4 @@
 *.local
 *.secrets
 .DS_Store
+.gitleaksignore

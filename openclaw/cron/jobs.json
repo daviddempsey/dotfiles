@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "6a28227d-7659-40d9-bfec-6f59033edf4f",
+      "agentId": "main",
+      "name": "flight-booking-reminder",
+      "enabled": false,
+      "createdAtMs": 1770050233713,
+      "updatedAtMs": 1770120000001,
+      "schedule": {
+        "kind": "at",
+        "at": "2026-02-03T12:00:00.000Z"
+      },
+      "sessionTarget": "main",
+      "wakeMode": "next-heartbeat",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "⏰ Reminder: Book your flight for James' bachelor party!\n\nAlso: Respond to your lease emails."
+      },
+      "state": {
+        "lastRunAtMs": 1770120000001,
+        "lastStatus": "ok",
+        "lastDurationMs": 15
+      }
+    },
+    {
+      "id": "a7dd77a0-bbfc-49ca-a1ac-d77bc273323f",
+      "agentId": "main",
+      "name": "morning-briefing",
+      "description": "Daily morning briefing: email, weather, infra status",
+      "enabled": true,
+      "createdAtMs": 1771943128826,
+      "updatedAtMs": 1775414675217,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 8 * * *",
+        "tz": "America/New_York"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "next-heartbeat",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Good morning. Please prepare my daily briefing:\n\n**WEEKDAY CHECK**: If today is Monday-Friday, include the commute section below. If Saturday-Sunday, skip sections 1-3.\n\n**PRIORITY RULE**: Real-time train arrivals are the SOURCE OF TRUTH. Service alerts can be outdated or wrong. If trains are showing up in real-time data, they're running — regardless of what alerts say.\n\n1. **Real-Time G Train Status (WEEKDAYS ONLY)**: Run `python3 ~/.openclaw/scripts/g-train-times.py`. This shows ACTUAL train arrivals at Nassau Ave. If the script returns connections, trains are running normally. ONLY if the script shows \"No connections found\" or errors should you consider service disrupted.\n\n2. **Subway Alerts (for context only)**: Use curl to https://api-endpoint.mta.info/Dataservice/mtagtfsfeeds/camsys%2Fsubway-alerts.json for G and L trains. \n   - If alerts mention \"suspended\" but real-time data shows trains → report: \"⚠️ Alerts mention suspension but real-time data shows trains running normally. Trust the live data.\"\n   - If no real-time trains AND alerts confirm issue → \"Service disrupted, consider WFH\"\n   - Otherwise show connections from step 1\n\n3. **Commute Timing (WEEKDAYS ONLY)**: Target arrival: 9:00 AM at 45 W 18th St. Recommend the LATEST G→L connection that gets me there on time (~8:35-8:40 AM departure). Note expected arrival time.\n\n4. **Weather**: Get NYC forecast using curl wttr.in/NYC. Include temp, conditions, any alerts.\n\n5. **Email Summary**: Use gog to check Gmail for important emails from last 24h. Group by urgency, skip routine CI noise.\n\n6. **Infrastructure**: \n   - **Wings** (on THIS server, sample-vnic): Run `systemctl status wings` locally — it has been stable since Jan 31\n   - **Panel-prod** (SSH to panel-prod): Check Panel container health, Laravel errors in today's log, game servers\n   Report all-clear or flag issues.\n\nFormat cleanly. Keep concise.",
+        "thinking": "medium",
+        "model": "openrouter/anthropic/claude-sonnet-4-6"
+      },
+      "state": {
+        "nextRunAtMs": 1775476800000,
+        "lastRunAtMs": 1775413557858,
+        "lastStatus": "ok",
+        "lastDurationMs": 69725,
+        "lastRunStatus": "ok",
+        "lastDelivered": true,
+        "lastDeliveryStatus": "delivered",
+        "consecutiveErrors": 0
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "568009042"
+      },
+      "expectFinal": true,
+      "failureAlert": {
+        "after": 2,
+        "channel": "telegram",
+        "to": "568009042"
+      }
+    },
+    {
+      "id": "0c423c4b-f699-4bfe-8f1e-34293b273bf7",
+      "agentId": "main",
+      "name": "hn-digest",
+      "enabled": true,
+      "createdAtMs": 1775414902592,
+      "updatedAtMs": 1775415702534,
+      "schedule": {
+        "kind": "cron",
+        "expr": "0 18 * * *",
+        "tz": "America/New_York"
+      },
+      "sessionTarget": "isolated",
+      "wakeMode": "now",
+      "payload": {
+        "kind": "agentTurn",
+        "message": "Scan Hacker News for new articles using blogwatcher. Run: blogwatcher scan && blogwatcher articles --unread\n\nSummarize all unread articles as a concise digest. For each article: title, URL, and a one-line description. Group by topic if natural groupings emerge. After sending the digest, mark all articles as read with: blogwatcher read-all\n\nKeep it short — no filler, no editorializing.",
+        "thinking": "minimal"
+      },
+      "delivery": {
+        "mode": "announce",
+        "channel": "telegram",
+        "to": "568009042"
+      },
+      "failureAlert": {
+        "after": 2,
+        "channel": "telegram",
+        "to": "568009042"
+      },
+      "state": {
+        "nextRunAtMs": 1775426400000,
+        "lastRunAtMs": 1775415616830,
+        "lastRunStatus": "ok",
+        "lastStatus": "ok",
+        "lastDurationMs": 85704,
+        "lastDelivered": true,
+        "lastDeliveryStatus": "delivered",
+        "consecutiveErrors": 0
+      }
+    }
+  ]
+}

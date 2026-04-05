@@ -2,3 +2,7 @@
 *.secrets
 .DS_Store
 .gitleaksignore
+openclaw/.env
+openclaw/agents/*/agent/auth-profiles.json
+openclaw/google-oauth-client.json
+openclaw/exec-approvals.json

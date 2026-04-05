@@ -170,5 +170,31 @@ link "$DOTFILES/claude/agents/buildbot.md" "$HOME/.claude/agents/buildbot.md"
 echo "==> opencode"
 link "$DOTFILES/opencode/opencode.json" "$HOME/.config/opencode/opencode.json"
 
+# OpenClaw (only on machines where it's installed)
+if command -v openclaw &>/dev/null || [ -d "$HOME/.openclaw" ]; then
+    echo "==> openclaw"
+    link "$DOTFILES/openclaw/openclaw.json" "$HOME/.openclaw/openclaw.json"
+    link "$DOTFILES/openclaw/cron/jobs.json" "$HOME/.openclaw/cron/jobs.json"
+    link "$DOTFILES/openclaw/scripts/g-train-times.py" "$HOME/.openclaw/scripts/g-train-times.py"
+    # Agents
+    for agent in build-fixer build-fixer-pro build-fixer-mini; do
+        for f in "$DOTFILES/openclaw/agents/$agent/agent"/*.md; do
+            [ -f "$f" ] && link "$f" "$HOME/.openclaw/agents/$agent/agent/$(basename "$f")"
+        done
+    done
+    link "$DOTFILES/openclaw/agents/main/agent/models.json" "$HOME/.openclaw/agents/main/agent/models.json"
+    # Skills
+    for skill_dir in "$DOTFILES/openclaw/skills"/*/; do
+        skill=$(basename "$skill_dir")
+        find "$skill_dir" -type f | while read -r f; do
+            rel="${f#$DOTFILES/openclaw/skills/$skill/}"
+            link "$f" "$HOME/.openclaw/skills/$skill/$rel"
+        done
+    done
+    if [ ! -f "$HOME/.openclaw/.env" ]; then
+        echo "  NOTE: copy openclaw/.env.example to ~/.openclaw/.env and fill in secrets"
+    fi
+fi
+
 echo
 echo "Done. Secrets go in ~/.zshrc.secrets (not tracked by git)."

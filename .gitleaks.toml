@@ -1,0 +1,4 @@
+# Allowlist false positives in API documentation examples
+[allowlist]
+regexTarget = "match"
+regexes = ['''YOUR_API_KEY''']

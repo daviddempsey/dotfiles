@@ -56,6 +56,10 @@ echo
 echo "==> gitleaks"
 install_gitleaks
 
+# Pre-commit hook
+echo "==> pre-commit hook"
+link "$DOTFILES/hooks/pre-commit" "$DOTFILES/.git/hooks/pre-commit"
+
 # Shell
 echo "==> zsh"
 link "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"

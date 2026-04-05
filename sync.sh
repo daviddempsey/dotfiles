@@ -4,6 +4,9 @@ set -euo pipefail
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 LOG="$HOME/.dotfiles-sync.log"
 
+# Ensure gitleaks is findable in cron/launchd/scheduled task contexts
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG"
 }

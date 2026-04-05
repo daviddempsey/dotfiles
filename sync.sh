@@ -28,14 +28,18 @@ fi
 git add -A
 
 # 4. Scan for secrets
-SCAN_OUTPUT=$(gitleaks protect --staged 2>&1) || {
-    log "SCAN FAILED — secrets detected:"
-    echo "$SCAN_OUTPUT" | tee -a "$LOG"
-    git reset HEAD --quiet
-    log "ABORT — staged changes reverted, fix secrets before syncing"
-    exit 1
-}
-log "SCAN OK — no secrets found"
+if ! command -v gitleaks &>/dev/null; then
+    log "WARNING: gitleaks not installed — skipping secret scan"
+else
+    SCAN_OUTPUT=$(gitleaks protect --staged 2>&1) || {
+        log "SCAN FAILED — secrets detected:"
+        echo "$SCAN_OUTPUT" | tee -a "$LOG"
+        git reset HEAD --quiet
+        log "ABORT — staged changes reverted, fix secrets before syncing"
+        exit 1
+    }
+    log "SCAN OK — no secrets found"
+fi
 
 # 5. Commit
 COMMIT_MSG="auto-sync: $(hostname) $(date '+%Y-%m-%d %H:%M')"

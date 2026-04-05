@@ -37,3 +37,11 @@ Host pc
     HostName 10.10.0.7
     User ddempsey
     ProxyJump vpn-bastion
+Host instance-ha-2
+    HostName 10.10.0.9
+    User ubuntu
+    ProxyJump vpn-bastion
+Host instance-ha-3
+    HostName 10.10.0.10
+    User ubuntu
+    ProxyJump vpn-bastion

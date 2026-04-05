@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Enable real symlinks on Windows (requires Developer Mode)
+case "$(uname -s)" in MINGW*|MSYS*) export MSYS=winsymlinks:nativestrict ;; esac
+
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
 install_gitleaks() {

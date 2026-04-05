@@ -3,6 +3,37 @@ set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
+install_gitleaks() {
+    if command -v gitleaks &>/dev/null; then
+        echo "  gitleaks already installed: $(gitleaks version)"
+        return
+    fi
+
+    echo "  installing gitleaks..."
+    case "$(uname -s)" in
+        Darwin)
+            brew install gitleaks
+            ;;
+        MINGW*|MSYS*)
+            local dest="$HOME/.local/bin"
+            mkdir -p "$dest"
+            local version
+            version=$(curl -sI "https://github.com/gitleaks/gitleaks/releases/latest" \
+                | grep -i '^location:' | sed 's|.*/v||;s/\r//')
+            local url="https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_windows_x64.zip"
+            local tmp
+            tmp=$(mktemp -d)
+            curl -sL "$url" -o "$tmp/gitleaks.zip"
+            unzip -qo "$tmp/gitleaks.zip" gitleaks.exe -d "$dest"
+            rm -rf "$tmp"
+            echo "  installed gitleaks to $dest/gitleaks.exe"
+            ;;
+        *)
+            echo "  WARNING: unsupported platform for gitleaks install, install manually"
+            ;;
+    esac
+}
+
 link() {
     local src="$1" dst="$2"
     mkdir -p "$(dirname "$dst")"
@@ -20,6 +51,10 @@ link() {
 
 echo "Installing dotfiles from $DOTFILES"
 echo
+
+# gitleaks
+echo "==> gitleaks"
+install_gitleaks
 
 # Shell
 echo "==> zsh"

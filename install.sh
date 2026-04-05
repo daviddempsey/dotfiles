@@ -14,6 +14,21 @@ install_gitleaks() {
         Darwin)
             brew install gitleaks
             ;;
+        Linux)
+            local dest="$HOME/.local/bin"
+            mkdir -p "$dest"
+            local version
+            version=$(curl -sI "https://github.com/gitleaks/gitleaks/releases/latest" \
+                | grep -i '^location:' | sed 's|.*/v||;s/\r//')
+            local url="https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_x64.tar.gz"
+            local tmp
+            tmp=$(mktemp -d)
+            curl -sL "$url" -o "$tmp/gitleaks.tar.gz"
+            tar -xzf "$tmp/gitleaks.tar.gz" -C "$dest" gitleaks
+            chmod +x "$dest/gitleaks"
+            rm -rf "$tmp"
+            echo "  installed gitleaks to $dest/gitleaks"
+            ;;
         MINGW*|MSYS*)
             local dest="$HOME/.local/bin"
             mkdir -p "$dest"
@@ -98,6 +113,12 @@ PLIST
         launchctl bootstrap gui/$(id -u) "$local_plist"
         echo "  launchd job installed: com.dotfiles.sync (daily 09:00)"
         ;;
+    Linux)
+        cron_entry="0 9 * * * $DOTFILES/sync.sh >> $HOME/.dotfiles-sync.log 2>&1"
+        # Remove old entry if present, then add
+        (crontab -l 2>/dev/null | grep -v "$DOTFILES/sync.sh"; echo "$cron_entry") | crontab -
+        echo "  cron job installed: daily 09:00"
+        ;;
     MINGW*|MSYS*)
         win_bash=$(cygpath -w "/usr/bin/bash")
         win_script=$(cygpath -w "$DOTFILES/sync.sh")
@@ -119,6 +140,7 @@ if [[ "$(uname)" == "Darwin" ]]; then
 elif grep -qi microsoft /proc/version 2>/dev/null; then
     link "$DOTFILES/zsh/.zshrc.local.wsl" "$HOME/.zshrc.local"
 fi
+# Note: native Linux and Windows Git Bash have no .zshrc.local variant yet
 
 # Git
 echo "==> git"

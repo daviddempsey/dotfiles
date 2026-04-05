@@ -20,7 +20,9 @@ install_gitleaks() {
             local version
             version=$(curl -sI "https://github.com/gitleaks/gitleaks/releases/latest" \
                 | grep -i '^location:' | sed 's|.*/v||;s/\r//')
-            local url="https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_x64.tar.gz"
+            local arch="x64"
+            case "$(uname -m)" in aarch64|arm64) arch="arm64" ;; esac
+            local url="https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_${arch}.tar.gz"
             local tmp
             tmp=$(mktemp -d)
             curl -sL "$url" -o "$tmp/gitleaks.tar.gz"

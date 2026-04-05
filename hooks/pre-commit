@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v gitleaks &>/dev/null; then
+    echo "WARNING: gitleaks not installed, skipping secret scan"
+    exit 0
+fi
+
+echo "Running gitleaks pre-commit scan..."
+gitleaks protect --staged --verbose

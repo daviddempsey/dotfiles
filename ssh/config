@@ -6,7 +6,7 @@ Host panel-prod
     User ddempsey
     ProxyJump vpn-bastion
 Host metrics-prod
-    HostName 10.1.0.3
+    HostName 10.1.0.5
     User ddempsey
     ProxyJump vpn-bastion
 Host panel-staging

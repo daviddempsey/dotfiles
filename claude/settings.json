@@ -18,7 +18,21 @@
       "/Volumes/git/docs"
     ]
   },
-  "model": "opus",
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "personal-plugin@daviddempsey-marketplace": true
+  },
+  "extraKnownMarketplaces": {
+    "daviddempsey-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "daviddempsey/plugin-marketplace"
+      }
+    }
+  },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true
 }

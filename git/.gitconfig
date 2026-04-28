@@ -1,7 +1,7 @@
 [user]
 	name = daviddempsey
 	email = davidgdempsey@gmail.com
-	signingkey = 5FF3A69D47F55C9EE69C54F4017BED0670445552
+	signingkey = 167A6A8995957CBA5C99CE9A75EF6E0C7B26B292
 [commit]
 	gpgsign = true
 [core]

@@ -1,0 +1,28 @@
+name: CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  check:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: dotfiles
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate shell scripts without installing dotfiles
+        run: bash -n install.sh sync.sh hooks/pre-commit
+      - name: Check patch whitespace
+        run: git diff --check HEAD
+      - name: Scan tracked files for secrets
+        run: |
+          version=8.30.0
+          curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${version}/gitleaks_${version}_linux_arm64.tar.gz" -o "$RUNNER_TEMP/gitleaks.tar.gz"
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+          "$RUNNER_TEMP/gitleaks" dir . --redact --no-banner

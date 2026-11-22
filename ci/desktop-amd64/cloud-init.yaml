@@ -16,6 +16,8 @@ packages: [docker.io, curl, ca-certificates, git, jq, unzip, acl, libicu74]
 write_files:
   - path: /etc/buildkit/desktop.toml
     content: |
+      [dns]
+        nameservers = ["10.0.2.3"]
       [worker.oci]
         max-parallelism = 1
         gc = true

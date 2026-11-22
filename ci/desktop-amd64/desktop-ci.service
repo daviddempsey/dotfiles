@@ -1,0 +1,17 @@
+[Unit]
+Description=Native AMD64 image build VM
+
+[Service]
+Type=simple
+WorkingDirectory=%h/projects/dotfiles/ci/desktop-amd64
+Environment=DESKTOP_CI_STATE=%h/.local/share/desktop-ci
+Environment=DESKTOP_CI_UID=1000
+Environment=DESKTOP_CI_GID=1000
+ExecStart=/usr/bin/docker compose up --no-build --no-recreate --abort-on-container-exit --exit-code-from vm
+ExecStop=/usr/bin/python3 %h/projects/dotfiles/ci/desktop-amd64/desktop-ci.py stop
+Restart=on-failure
+RestartSec=15
+TimeoutStopSec=100
+
+[Install]
+WantedBy=default.target

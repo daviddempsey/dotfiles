@@ -1,0 +1,67 @@
+#cloud-config
+hostname: desktop-ci
+manage_etc_hosts: true
+disable_root: false
+ssh_pwauth: false
+users:
+  - name: root
+    lock_passwd: true
+    ssh_authorized_keys: ["__SSH_PUBLIC_KEY__"]
+  - name: ci-runner
+    groups: [docker]
+    shell: /bin/bash
+    lock_passwd: true
+package_update: true
+packages: [docker.io, curl, ca-certificates, git, jq, unzip, acl, libicu74]
+write_files:
+  - path: /etc/buildkit/desktop.toml
+    content: |
+      [worker.oci]
+        max-parallelism = 1
+        gc = true
+        reservedSpace = "2GB"
+        maxUsedSpace = "24GB"
+        minFreeSpace = "8GB"
+  - path: /etc/systemd/system/desktop-buildkit.service
+    content: |
+      [Unit]
+      Description=Persistent native AMD64 CI builder
+      Requires=docker.service
+      After=docker.service
+      [Service]
+      Restart=always
+      RestartSec=5
+      ExecStartPre=-/usr/bin/docker rm -f desktop-buildkit
+      ExecStart=/usr/bin/docker run --name desktop-buildkit --privileged --network host --cpus 6 --memory 4g --memory-swap 4g --log-driver local --log-opt max-size=10m --log-opt max-file=3 -v desktop-buildkit:/var/lib/buildkit -v /etc/buildkit/desktop.toml:/etc/buildkit/buildkitd.toml:ro moby/buildkit@sha256:baf6138eb8c37644800c7c913fba051e840ebb9ba13eaf92d92ef9a1712d0b4c --addr tcp://127.0.0.1:1234 --config /etc/buildkit/buildkitd.toml
+      ExecStop=/usr/bin/docker stop -t 60 desktop-buildkit
+      TimeoutStopSec=75
+      [Install]
+      WantedBy=multi-user.target
+  - path: /etc/systemd/system/desktop-runner@.service
+    content: |
+      [Unit]
+      Description=Desktop AMD64 image runner (%i)
+      Requires=desktop-buildkit.service
+      After=desktop-buildkit.service network-online.target
+      Wants=network-online.target
+      [Service]
+      User=ci-runner
+      WorkingDirectory=/srv/actions/%i
+      Environment=DOCKER_CONFIG=/srv/actions/%i/.docker
+      ExecStart=/srv/actions/%i/run.sh
+      Restart=always
+      RestartSec=10
+      TimeoutStopSec=300
+      KillSignal=SIGINT
+      [Install]
+      WantedBy=multi-user.target
+  - path: /etc/ssh/sshd_config.d/10-desktop-ci.conf
+    content: |
+      PasswordAuthentication no
+      PermitRootLogin prohibit-password
+      AllowAgentForwarding no
+      X11Forwarding no
+runcmd:
+  - [systemctl, enable, --now, docker]
+  - [systemctl, daemon-reload]
+  - [systemctl, enable, --now, desktop-buildkit]

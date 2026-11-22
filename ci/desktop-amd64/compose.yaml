@@ -1,0 +1,24 @@
+name: desktop-ci
+services:
+  vm:
+    image: local/desktop-ci-vm:1
+    build: .
+    user: "${DESKTOP_CI_UID}:${DESKTOP_CI_GID}"
+    restart: "no"
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    devices: [/dev/kvm:/dev/kvm]
+    volumes:
+      - "${DESKTOP_CI_STATE}:/vm"
+    tmpfs: [/tmp:size=64m]
+    ports: ["127.0.0.1:2227:2222"]
+    cpus: 6
+    mem_limit: 7g
+    memswap_limit: 7g
+    pids_limit: 512
+    stop_grace_period: 90s
+    logging:
+      driver: local
+      options: {max-size: 10m, max-file: "3"}
